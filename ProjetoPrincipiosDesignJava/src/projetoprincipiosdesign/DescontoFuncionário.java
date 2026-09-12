@@ -1,4 +1,4 @@
-package projetoprincipiosdesign.Descontos;
+package projetoprincipiosdesign;
 
 public class DescontoFuncionário implements Desconto {
     @Override

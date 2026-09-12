@@ -1,4 +1,4 @@
-package projetoprincipiosdesign.PagamentosGeral;
+package projetoprincipiosdesign;
 
 public class PagamentoPix implements Pagamento {
    /* @Override

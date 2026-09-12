@@ -1,4 +1,4 @@
-package projetoprincipiosdesign.PagamentosGeral;
+package projetoprincipiosdesign;
 
 public class PagamentoBoleto implements Pagamento, GerarBoleto {
     @Override

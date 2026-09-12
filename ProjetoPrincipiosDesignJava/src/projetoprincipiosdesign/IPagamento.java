@@ -1,4 +1,4 @@
-package projetoprincipiosdesign.PagamentosGeral;
+package projetoprincipiosdesign;
 
 public interface IPagamento {
     void pagar(double valor);
