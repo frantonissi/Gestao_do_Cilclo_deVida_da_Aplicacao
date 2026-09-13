@@ -1,10 +1,5 @@
 package projetoprincipiosdesign;
 
-// Imports das subpastas do seu projeto
-import projetoprincipiosdesign.Desconto;
-import projetoprincipiosdesign.TipoEntrega;
-import projetoprincipiosdesign.Pagamento;
-
 public class PedidoService {
 
     private final PedidoRepository repository;
@@ -28,19 +23,110 @@ public class PedidoService {
         double subtotal = 0.0;
 
         if (pedido.getItens() != null) {
-            for (ItemPedido item : pedido.getItens()) {
+            for (ItemPedido item : pedido.getItens()) { //o : seria um para cada, ou seja, para cada pedido, pegue os itens dele
                 subtotal += item.getPreco() * item.getQuantidade();
             }
         }
 
-        double valorDesconto = (desconto != null) ? desconto.calcular(subtotal) : 0.0;
-        double valorFrete = (tipoEntrega != null) ? tipoEntrega.calcularFrete(subtotal) : 0.0;
+        double valorDesconto;
+
+        if(desconto != null){
+            valorDesconto = desconto.calcular(subtotal);
+        }else{
+            valorDesconto = 0.0;
+        } //lógica para aplicar o desconto, depois no main iremos escolher qual vai ser o desconto (aluno, professor ou funcionario)
+
+
+
+        double valorFrete;
+
+        if(tipoEntrega != null){
+            valorFrete = tipoEntrega.calcularFrete(subtotal);
+        }else{
+            return  0.0;
+        }
+
 
         return (subtotal - valorDesconto) + valorFrete;
+
+    }
+
+    public double calcularTotalComParcelas(Pedido pedido, Desconto desconto, TipoEntrega tipoEntrega, Parcelavel parcelavel) {
+        double subtotal = 0.0;
+
+        if (pedido.getItens() != null) {
+            for (ItemPedido item : pedido.getItens()) { //o : seria um para cada, ou seja, para cada pedido, pegue os itens dele
+                subtotal += item.getPreco() * item.getQuantidade();
+            }
+        }
+
+        double valorDesconto;
+
+        if(desconto != null){
+            valorDesconto = desconto.calcular(subtotal);
+        }else{
+            valorDesconto = 0.0;
+        } //lógica para aplicar o desconto, depois no main iremos escolher qual vai ser o desconto (aluno, professor ou funcionario)
+
+
+
+        double valorFrete;
+
+        if(tipoEntrega != null){
+            valorFrete = tipoEntrega.calcularFrete(subtotal);
+        }else{
+            return  0.0;
+        }
+
+        double valorFinal = (subtotal - valorDesconto) + valorFrete;
+
+
+        double parcelas = 0;
+        if(parcelavel != null){
+            parcelas = parcelavel.parcelar(12, valorFinal);
+        }
+        return parcelas;
+
+    }
+
+
+    public String calcularTotalBoleto(Pedido pedido, Desconto desconto, TipoEntrega tipoEntrega, GerarBoleto gerarBoleto) {
+        double subtotal = 0.0;
+
+        if (pedido.getItens() != null) {
+            for (ItemPedido item : pedido.getItens()) { //o : seria um para cada, ou seja, para cada pedido, pegue os itens dele
+                subtotal += item.getPreco() * item.getQuantidade();
+            }
+        }
+
+        double valorDesconto;
+
+        if(desconto != null){
+            valorDesconto = desconto.calcular(subtotal);
+        }else{
+            valorDesconto = 0.0;
+        } //lógica para aplicar o desconto, depois no main iremos escolher qual vai ser o desconto (aluno, professor ou funcionario)
+
+
+
+        double valorFrete;
+
+        if(tipoEntrega != null){
+            valorFrete = tipoEntrega.calcularFrete(subtotal);
+        }else{
+            return  "0.0";
+        }
+
+        double valorFinal = (subtotal - valorDesconto) + valorFrete;
+
+        return gerarBoleto.gerarBoleto(valorFinal) + valorFinal;
+
+
     }
 
     public void finalizarPedido(Pedido pedido, Desconto desconto, TipoEntrega tipoEntrega, Pagamento pagamento) {
         double total = calcularTotal(pedido, desconto, tipoEntrega);
+
 
         // Salva usando o repositório configurado
         this.repository.salvar(pedido);
@@ -48,6 +134,7 @@ public class PedidoService {
         System.out.println("Gerando resumo do pedido...");
         System.out.println("Cliente: " + pedido.getCliente().getNome());
         System.out.printf("Total: R$ %.2f%n", total);
+
 
         // Executa o pagamento via polimorfismo
         if (pagamento != null) {

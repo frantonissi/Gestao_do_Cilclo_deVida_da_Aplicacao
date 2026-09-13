@@ -22,15 +22,15 @@ public class PagamentoCartao implements Pagamento, Parcelavel {
    */
 
     @Override
-    public void parcelar(int quantidade_parcelas, double valorTotal){
-        if(quantidade_parcelas < 1 || quantidade_parcelas > 12){
-            throw new IllegalArgumentException("Número de parcelas inválido (máx 12x).");
+    public double parcelar(int quantidade_parcelas, double valorTotal){
+        if(quantidade_parcelas < 2 || quantidade_parcelas > 12){
+            throw new IllegalArgumentException("Número de parcelas inválido (máx 12x e min 2).");
         }
         if(valorTotal <= 0){
-            throw new IllegalArgumentException("Valor disponivel insuficiente (máx 12x).");
+            throw new IllegalArgumentException("Valor disponivel insuficiente.");
         }
-        double valor_Parcela = valorTotal/quantidade_parcelas;
-        System.out.printf("Cartão parcelado em %dx de R$ %.2f%n", quantidade_parcelas, valor_Parcela);
+        return valorTotal/quantidade_parcelas;
+
     }
 
     @Override

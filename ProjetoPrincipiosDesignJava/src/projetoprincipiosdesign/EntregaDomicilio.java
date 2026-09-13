@@ -1,6 +1,6 @@
 package projetoprincipiosdesign;
 
-public class Entrega implements TipoEntrega {
+public class EntregaDomicilio implements TipoEntrega {
     public double calcularFrete(double total) {
         return 15.0;
     }
